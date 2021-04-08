@@ -1,10 +1,16 @@
 package edu.moravian.csci299.mocalendar;
 
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.widget.TimePicker;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * A fragment that acts as a popup window for picking a time. Any fragment that
@@ -13,27 +19,28 @@ import java.util.Date;
  *
  * HINTS: use the DatePickerFragment as inspiration for completing this one.
  */
-public class  TimePickerFragment extends DialogFragment {
+public class  TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
     /** The name of the argument for the start time (a boolean) */
     private static final String ARG_IS_START_TIME = "is_start_time";
 
     /** The name of the argument for the time (a Date object) */
     private static final String ARG_TIME = "time";
 
-    /**
-     * Create a new instance of the time picking fragment dialog.
-     * @param isStartTime whether this is picking a start or end time, this has
-     *                    no influence on this picker but is used in when
-     *                    calling the callback method
-     * @param time the time to initially display in the picker
-     * @return a new TimePickerFragment instance
-     */
-    public static TimePickerFragment newInstance(boolean isStartTime, Date time) {
-        TimePickerFragment fragment = new TimePickerFragment();
-        Bundle args = new Bundle();
-        args.putBoolean(ARG_IS_START_TIME, isStartTime);
-        args.putSerializable(ARG_TIME, time);
-        fragment.setArguments(args);
-        return fragment;
+    interface Callbacks {
+        void onTimeChanged(Date date);
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        Date date = DateUtils.useDateOrNow((Date)getArguments().getSerializable(ARG_TIME));
+        int[] time = DateUtils.getHourMinute(date);
+        return new TimePickerDialog(requireContext(), this, time[0], time[1], true);
+
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        ((TimePickerFragment.Callbacks) Objects.requireNonNull(getTargetFragment())).onTimeChanged(DateUtils.getTime(hourOfDay,minute));
     }
 }
