@@ -1,13 +1,16 @@
 package edu.moravian.csci299.mocalendar;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -73,9 +76,24 @@ public class CalendarFragment extends Fragment {
 
         // TODO: Setup the calendar
 
+        //fragment_calendar.xml
+
+
         // Return the base view
         return base;
     }
     
     // TODO: get (and clear) the callbacks object as appropriate
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        callbacks = (Callbacks) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callbacks = null;
+    }
 }
