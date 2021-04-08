@@ -18,10 +18,26 @@ import android.os.Bundle;
  * NOTE: This Activity is the bare-bones, empty, Activity. Work will be definitely needed in
  * onCreate() along with implementing some callbacks.
  */
+
+
+/*
+TODO:
+   1. create an instance of a calendar object
+   2. create a list fragment
+   3. create an onClick for each day on the calendar
+        3a. in onClick, get events for that day from the database
+   4. replace fragment every time it is clicked or edited
+   5. Implement callbacks
+ */
+
+
 public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
+
+
+
 }
