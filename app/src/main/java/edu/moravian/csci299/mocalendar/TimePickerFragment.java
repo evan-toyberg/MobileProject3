@@ -36,11 +36,12 @@ public class  TimePickerFragment extends DialogFragment implements TimePickerDia
         Date date = DateUtils.useDateOrNow((Date)getArguments().getSerializable(ARG_TIME));
         int[] time = DateUtils.getHourMinute(date);
         return new TimePickerDialog(requireContext(), this, time[0], time[1], true);
-
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        getArguments().getBoolean(ARG_IS_START_TIME);
         ((TimePickerFragment.Callbacks) Objects.requireNonNull(getTargetFragment())).onTimeChanged(DateUtils.getTime(hourOfDay,minute));
+        //onTimeSelected(); might need this once method is created
     }
 }

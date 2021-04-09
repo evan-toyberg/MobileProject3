@@ -5,13 +5,13 @@ import android.content.Context;
 import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class CalendarRepository {
-    // Internal singleton fields of the repository
     private final CalendarDataBase database;
     private final CalendarDao calendarDao;
     private final Executor executor = Executors.newSingleThreadExecutor();
@@ -24,15 +24,35 @@ public class CalendarRepository {
         calendarDao = database.calendarDao();
     }
 
-    public LiveData<List<Event>> getAllItems() { return calendarDao.getAllEvents(); }
-    public LiveData<Event> getItem(UUID id) { return calendarDao.getEventById(id); }
+    public LiveData<List<Event>> getAllEvents() {
+        return calendarDao.getAllEvents();
+    }
 
-    public void addItems(Event event) {
+    public LiveData<Event> getEventById(UUID id) {
+        return calendarDao.getEventById(id);
+    }
+
+    public LiveData<List<Event>> getEventsBetween(Date start, Date end) {
+        return calendarDao.getEventsBetween(start, end);
+    }
+
+    public LiveData<List<Event>> getEventsOnDay(Date day) {
+        return calendarDao.getEventsOnDay(day);
+    }
+
+    public void addEvent(Event event) {
         executor.execute(() -> {
             calendarDao.addEvent(event);
         });
     }
-    public void updateItem(Event event) {
+
+    public void removeEvent(Event event) {
+        executor.execute(() -> {
+            calendarDao.removeEvent(event);
+        });
+    }
+
+    public void updateEvent(Event event) {
         executor.execute(() -> {
             calendarDao.updateEvent(event);
         });
@@ -40,10 +60,14 @@ public class CalendarRepository {
 
     // The single instance of the repository
     private static CalendarRepository INSTANCE;
+
     public static CalendarRepository get() {
-        if (INSTANCE == null) { throw new IllegalStateException("CollectibleRepository must be initialized"); }
+        if (INSTANCE == null) {
+            throw new IllegalStateException("CalendarRepository must be initialized");
+        }
         return INSTANCE;
     }
+
     public static void initialize(Context context) {
         if (INSTANCE == null) {
             INSTANCE = new CalendarRepository(context);
