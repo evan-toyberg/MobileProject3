@@ -5,10 +5,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -41,7 +41,7 @@ public class ListFragment extends Fragment {
 
     interface Callbacks {
 
-        void onEventSelected(EventType type);
+        void onEventSelected(Event event);
     }
 
     /**
@@ -89,6 +89,8 @@ public class ListFragment extends Fragment {
         date = DateUtils.useDateOrNow((Date) getArguments().getSerializable(ARG_DATE));
         onDateChange();
         // TODO: maybe something related to the menu?
+
+
         // Think this is all for menu
         setHasOptionsMenu(true);
     }
@@ -134,9 +136,77 @@ public class ListFragment extends Fragment {
         super.onDetach();
         callbacks = null;
     }
-    // TODO: some code for the menu options?
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.new_event){
+            Event event = new Event();
+            event.name = "New Event";
+            event.startTime = new Date();
+            event.endTime = new Date();
+            event.description = "";
 
+            CalendarRepository.get().addEvent(event);
+            callbacks.onEventSelected(event);
+            return true;
+        }
+        else
+            return super.onOptionsItemSelected(item);
+
+
+    }
     // TODO: some code for the recycler view?
 
+    private class EventViewHolder extends RecyclerView.ViewHolder {
+        Event event;
+        final TextView name;
+        public EventViewHolder(@NonNull View eventView) {
+            super(eventView);
+            name = eventView.findViewById(R.id.eventTypeName);
+            eventView.setOnClickListener(v -> {
+                callbacks.onEventSelected(event);
+            });
+        }
+    }
+
+    /**
+     * The adapter for the items list to be displayed in a RecyclerView.
+     */
+    private class EventListAdapter extends RecyclerView.Adapter<EventViewHolder> {
+        /**
+         * To create the view holder we inflate the layout we want to use for
+         * each item and then return an ItemViewHolder holding the inflated
+         * view.
+         */
+        @NonNull
+        @Override
+        public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_type_item, parent, false);
+            return new EventViewHolder(v);
+        }
+
+        /**
+         * When we bind a view holder to an item (i.e. use the view with a view
+         * holder to display a specific item in the list) we need to update the
+         * various views within the holder for our new values.
+         * @param holder the ItemViewHolder holding the view to be updated
+         * @param position the position in the list of the item to display
+         */
+        @Override
+        public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
+            Event event = events.get(position);
+            holder.event = event;
+            holder.name.setText(event.name);
+        }
+
+        /**
+         * @return the total number of items to be displayed in the list
+         */
+        @Override
+        public int getItemCount() {
+            return events.size();
+        }
+    }
     // TODO: some code for the swipe-to-delete?
+
+    // TODO: some code for the menu options?
 }

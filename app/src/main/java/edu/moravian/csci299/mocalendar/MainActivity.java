@@ -1,12 +1,14 @@
 package edu.moravian.csci299.mocalendar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * The main (and only) activity for the application that hosts all of the fragments.
@@ -23,6 +25,8 @@ import java.util.Date;
  * onCreate() along with implementing some callbacks.
  */
 public class MainActivity extends AppCompatActivity implements CalendarFragment.Callbacks, ListFragment.Callbacks {
+    private ListFragment listFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,23 +38,26 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
         if (calendarFragment == null) {
             calendarFragment = CalendarFragment.newInstance();
         }  // create new instance of CalendarFragment if it cannot be found
-        ListFragment listFragment = ListFragment.newInstance();  // get new list fragment
+        listFragment = ListFragment.newInstance();  // get new list fragment
         transaction.add(R.id.fragment_container, calendarFragment).add(R.id.fragment_container, listFragment).commit(); // add both fragments to main view
 
         // todo : still need to figure out how to get clicks on dates to register and show events for current date
         // Also make sure the fragments show up in correct positions
 
-
     }
-
 
     @Override
     public void onDayChanged(Date date) {
-
+        listFragment.setDay(date);
     }
 
     @Override
-    public void onEventSelected(EventType type) {
+    public void onEventSelected(Event event) {
 
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.new_event, EventFragment.newInstance(event))
+                .addToBackStack(null)
+                .commit();
     }
 }

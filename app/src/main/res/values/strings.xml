@@ -2,5 +2,6 @@
     <string name="app_name">MoCalendar</string>
     <string name="event_icon">Event Icon</string>
     <string name="event_type">Event Type</string>
+    <string name="new_event">Event</string>
 
 </resources>
