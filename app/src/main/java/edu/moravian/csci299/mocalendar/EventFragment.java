@@ -21,7 +21,7 @@ import java.util.UUID;
  * text edit boxes (for the name and description) or popup windows (for the date, start time,
  * time and type). The event is not updated in the database until the user leaves this fragment.
  */
-public class EventFragment extends Fragment implements TextWatcher {
+public class EventFragment extends Fragment implements TextWatcher, EventTypePickerFragment.Callbacks, DatePickerFragment.Callbacks, TimePickerFragment.Callbacks {
 
     // fragment initialization parameters
     private static final String ARG_EVENT_ID = "event_id";
@@ -84,7 +84,8 @@ public class EventFragment extends Fragment implements TextWatcher {
 
         // TODO
 
-//        description = base.findViewById(R.id.description);
+        description = base.findViewById(R.id.decription);
+        description.addTextChangedListener(this);
 
         typeView = base.findViewById(R.id.eventTypeIcon);
         typeView.setOnClickListener(v -> {
@@ -92,23 +93,23 @@ public class EventFragment extends Fragment implements TextWatcher {
         });
 
 
-//        startTimeView = base.findViewById(R.id.calendarView);
+//        startTimeView = base.findViewById(R.id.);
 //        startTimeView.setOnClickListener(v -> {
 //            showTimePicker(true);
 //        });
 
 
-//        tillView = base.findViewById(R.id.fragment_container);
+//        tillView = base.findViewById(R.id.);
 //        tillView.setOnClickListener(v -> {
 //
 //        });
 //
-//        endTimeView = base.findViewById(R.id.fragment_container);
+//        endTimeView = base.findViewById(R.id.);
 //        endTimeView.setOnClickListener(v -> {
 //            showTimePicker(false);
 //        });
 //
-//        dateView = base.findViewById(R.id.fragment_container);
+//        dateView = base.findViewById(R.id.);
 //        dateView.setOnClickListener(v -> {
 //            showDatePicker();
 //        });
@@ -177,15 +178,8 @@ public class EventFragment extends Fragment implements TextWatcher {
         picker.show(requireFragmentManager(), DIALOG_EVENT_TYPE);
     }
 
-    private void onTimeSelected(Date date) {
 
-    }
-    private void onDateSelected(Date date){
 
-    }
-    private void onTypeSelected(EventType eventType){
-
-    }
 
     /**
      * When an EditText updates we update the corresponding Event field. Need to register this
@@ -211,5 +205,20 @@ public class EventFragment extends Fragment implements TextWatcher {
      */
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
+    }
+
+    @Override
+    public void onTimeChanged(Date date) {
+
+    }
+
+    @Override
+    public void onDateSelected(Date date) {
+
+    }
+
+    @Override
+    public void onTypeSelected(EventType type) {
+
     }
 }
