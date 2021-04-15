@@ -39,7 +39,7 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
     // argument once loaded from database
     private Event event;
     private TextView dateView, endTimeView, startTimeView, tillView;
-    private EditText description, name;
+    private EditText description, eventNameView;
 
     private ImageView typeView;
 
@@ -113,8 +113,8 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
 //        dateView.setOnClickListener(v -> {
 //            showDatePicker();
 //        });
-//        name = base.findViewById(R.id.eventTypeName);
-//        name.addTextChangedListener(this);
+        eventNameView = base.findViewById(R.id.eventTypeName);
+        eventNameView.addTextChangedListener(this);
 
 
         // Return the base view
@@ -189,7 +189,7 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
      */
     @Override
     public void afterTextChanged(Editable s) {
-        event.name = name.getText().toString();
+        event.name = eventNameView.getText().toString();
         event.description = description.getText().toString();
     }
 
