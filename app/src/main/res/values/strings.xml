@@ -3,5 +3,6 @@
     <string name="event_icon">Event Icon</string>
     <string name="event_type">Event Type</string>
     <string name="new_event">Event</string>
+    <string name="new_assignment">New Assignment</string>
 
 </resources>

@@ -5,9 +5,13 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,10 +37,11 @@ public class ListFragment extends Fragment {
     private static final String ARG_DATE = "date";
 
     // data
+    private LiveData<List<Event>> eventDataItems;
     private Date date;
     private List<Event> events = Collections.emptyList();
     private TextView dateText;
-
+    private RecyclerView listView;
     private Callbacks callbacks;
 
     interface Callbacks {
@@ -106,7 +111,12 @@ public class ListFragment extends Fragment {
         View base = inflater.inflate(R.layout.fragment_list, container, false);
         // TODO
 //        dateText.findViewById(R.id.calendarView);
-        RecyclerView listView; // Have to init recycler view
+        listView = new RecyclerView(getContext()); // Have to init recycler view
+        listView.setLayoutManager(new LinearLayoutManager(getContext()));
+        listView.setAdapter(new EventListAdapter());
+
+//        dateText = base.findViewById(R.id.)
+
         // return the base view
         return base;
     }
@@ -117,12 +127,15 @@ public class ListFragment extends Fragment {
      */
     private void onDateChange() {
         // TODO
+//        eventDataItems.removeObservers(this);
+//        eventDataItems = CalendarRepository.get().getAllEvents();
+//        eventDataItems.observe(this, events -> {
+//            this.events = events;
+//            listView.getAdapter().notifyDataSetChanged();
+//
+//            //            dateText.setText(DateUtils.toFullDateString(date));
+//        });
 
-        CalendarRepository.get().getEventsOnDay(date).observe(this, events1 -> {
-
-//            dateText.setText(DateUtils.toFullDateString(date));
-
-        });
     }
 
     @Override
@@ -136,9 +149,10 @@ public class ListFragment extends Fragment {
         super.onDetach();
         callbacks = null;
     }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.new_event){
+        if (item.getItemId() == R.id.new_event) {
             Event event = new Event();
             event.name = "New Event";
             event.startTime = new Date();
@@ -148,8 +162,7 @@ public class ListFragment extends Fragment {
             CalendarRepository.get().addEvent(event);
             callbacks.onEventSelected(event);
             return true;
-        }
-        else
+        } else
             return super.onOptionsItemSelected(item);
 
 
@@ -159,6 +172,7 @@ public class ListFragment extends Fragment {
     private class EventViewHolder extends RecyclerView.ViewHolder {
         Event event;
         final TextView name;
+
         public EventViewHolder(@NonNull View eventView) {
             super(eventView);
             name = eventView.findViewById(R.id.eventTypeName);
@@ -188,7 +202,8 @@ public class ListFragment extends Fragment {
          * When we bind a view holder to an item (i.e. use the view with a view
          * holder to display a specific item in the list) we need to update the
          * various views within the holder for our new values.
-         * @param holder the ItemViewHolder holding the view to be updated
+         *
+         * @param holder   the ItemViewHolder holding the view to be updated
          * @param position the position in the list of the item to display
          */
         @Override
@@ -209,4 +224,11 @@ public class ListFragment extends Fragment {
     // TODO: some code for the swipe-to-delete?
 
     // TODO: some code for the menu options?
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.list_menu, menu);
+    }
+
 }

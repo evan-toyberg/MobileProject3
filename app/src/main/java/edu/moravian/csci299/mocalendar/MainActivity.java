@@ -32,17 +32,17 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FragmentManager fm = getSupportFragmentManager();  // get fragment manager
-        FragmentTransaction transaction = fm.beginTransaction();  // begin transaction with fragment manager
-        CalendarFragment calendarFragment = (CalendarFragment) fm.findFragmentById(R.id.calendarView);  // get calendar fragment
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        CalendarFragment calendarFragment = (CalendarFragment) fm.findFragmentById(R.id.calendarView);
+
+        listFragment = (ListFragment) fm.findFragmentByTag("list");
+
         if (calendarFragment == null) {
             calendarFragment = CalendarFragment.newInstance();
-        }  // create new instance of CalendarFragment if it cannot be found
-        listFragment = ListFragment.newInstance();  // get new list fragment
-        transaction.add(R.id.fragment_container, calendarFragment).add(R.id.fragment_container, listFragment).commit(); // add both fragments to main view
-
-        // todo : still need to figure out how to get clicks on dates to register and show events for current date
-        // Also make sure the fragments show up in correct positions
+        }
+        listFragment = ListFragment.newInstance();
+        transaction.add(R.id.fragment_container, calendarFragment).add(R.id.fragment_container, listFragment).commit();
 
     }
 
@@ -53,10 +53,9 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
 
     @Override
     public void onEventSelected(Event event) {
-
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.new_event, EventFragment.newInstance(event))
+                .replace(R.id.fragment_container, EventFragment.newInstance(event))
                 .addToBackStack(null)
                 .commit();
     }

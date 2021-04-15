@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import java.sql.Time;
 import java.util.Date;
 import java.util.Objects;
 
@@ -28,6 +29,15 @@ public class  TimePickerFragment extends DialogFragment implements TimePickerDia
 
     interface Callbacks {
         void onTimeChanged(Date date);
+    }
+
+    public static TimePickerFragment newInstance(Boolean isStartTime, Date time) {
+        TimePickerFragment fragment = new TimePickerFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_TIME, time.getTime());
+        args.putBoolean(ARG_IS_START_TIME, isStartTime);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @NonNull

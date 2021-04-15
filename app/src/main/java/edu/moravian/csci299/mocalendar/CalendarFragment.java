@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -20,7 +21,9 @@ import java.util.Date;
  *
  * NOTE: this is the easiest of the core fragments to complete
  */
-public class CalendarFragment extends Fragment {
+public class CalendarFragment extends Fragment implements CalendarView.OnDateChangeListener{
+
+
     /**
      * The callbacks that can be called by this fragment on the hosting Activity.
      */
@@ -74,16 +77,14 @@ public class CalendarFragment extends Fragment {
         // Inflate the layout for this fragment
         View base = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-        // TODO: Setup the calendar
 
-        //fragment_calendar.xml
-
-
+        CalendarView calendarView = base.findViewById(R.id.calendarView);
+        calendarView.setDate(date.getTime());
+        calendarView.setOnDateChangeListener(this);
         // Return the base view
         return base;
     }
     
-    // TODO: get (and clear) the callbacks object as appropriate
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -95,5 +96,14 @@ public class CalendarFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         callbacks = null;
+    }
+
+    @Override
+    public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+        Date date = DateUtils.getDate(year, month, dayOfMonth);
+        callbacks.onDayChanged(date);
+        getArguments().putSerializable(ARG_DATE, date);
+
+
     }
 }

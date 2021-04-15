@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -81,42 +82,57 @@ public class EventFragment extends Fragment implements TextWatcher {
         View base = inflater.inflate(R.layout.fragment_event, container, false);
 
         // TODO
-        name = name.findViewById(R.id.eventTypeName);
+
+        description = base.findViewById(R.id.fragment_container);
+
+        typeView = base.findViewById(R.id.eventTypeIcon);
+        typeView.setOnClickListener(v -> {
+            showEventTypePicker();
+        });
+
+
+        startTimeView = base.findViewById(R.id.calendarView);
+        startTimeView.setOnClickListener(v -> {
+            showTimePicker(true);
+        });
+
+
+        tillView = base.findViewById(R.id.fragment_container);
+        tillView.setOnClickListener(v -> {
+
+        });
+
+        endTimeView = base.findViewById(R.id.fragment_container);
+        endTimeView.setOnClickListener(v -> {
+            showTimePicker(false);
+        });
+
+        dateView = base.findViewById(R.id.fragment_container);
+        dateView.setOnClickListener(v -> {
+            showDatePicker();
+        });
+        name = base.findViewById(R.id.eventTypeName);
         name.addTextChangedListener(this);
 
-        description = description.findViewById(R.id.eventTypeName);
 
-        typeView = typeView.findViewById(R.id.eventTypeIcon);
-        typeView.setOnClickListener(v -> {
-
-            updateUI();
-        });
-
-
-        startTimeView = startTimeView.findViewById(R.id.calendarView);
-        startTimeView.setOnClickListener(v -> {
-
-            updateUI();
-        });
-
-
-        endTimeView = endTimeView.findViewById(R.id.calendarView);
-        endTimeView.setOnClickListener(v -> {
-
-            updateUI();
-        });
-
-        dateView = dateView.findViewById(R.id.calendarView);
-        dateView.setOnClickListener(v -> {
-
-            updateUI();
-        });
-        tillView.findViewById(R.id.calendarView);
+//        base.findViewById(R.id.calendarView);
         // Return the base view
         return base;
     }
 
     // TODO: save the event to the database at some point
+    //Think this saves
+
+    /**
+     * Save the edits to the database when the fragment is stopped.
+     */
+    @Override
+    public void onStop() {
+        //TODO: Have to save more info
+        super.onStop();
+        event.description = description.getText().toString();
+        CalendarRepository.get().updateEvent(event);
+    }
 
     /**
      * Updates the UI to match the event.
@@ -130,6 +146,7 @@ public class EventFragment extends Fragment implements TextWatcher {
 
         //Might be .setVisibility() instead of setText for a couple of these
         tillView.setText(DateUtils.toDateString(event.endTime));
+//        tillView.setVisibility();
         //
         endTimeView.setText(DateUtils.toTimeString(event.endTime));
         description.setText(event.description);
@@ -137,11 +154,35 @@ public class EventFragment extends Fragment implements TextWatcher {
     }
 
     // TODO: maybe some helpful functions for showing dialogs and the callback functions
-    //showTimePicker(Boolean isStartTime) -> TimePickerFragment
-    //onTimeSelected(Date date)
-    //onDateSelected(Date date)
-    //onStop()
-    //onTypeSelected(EventType)
+    private void showTimePicker(Boolean isStartTime) {
+        TimePickerFragment picker;
+        if (isStartTime) {
+            picker = TimePickerFragment.newInstance(isStartTime, event.startTime);
+        } else
+            picker = TimePickerFragment.newInstance(isStartTime, event.endTime);
+
+        picker.setTargetFragment(this, REQUEST_TIME);
+        picker.show(requireFragmentManager(), DIALOG_TIME);
+    }
+
+    private void showDatePicker() {
+        DatePickerFragment picker = DatePickerFragment.newInstance(event.startTime);
+        picker.setTargetFragment(this, REQUEST_DATE);
+        picker.show(requireFragmentManager(), DIALOG_DATE);
+    }
+
+    private void showEventTypePicker() {
+        EventTypePickerFragment picker = EventTypePickerFragment.newInstance(event.type);
+        picker.setTargetFragment(this, REQUEST_EVENT_TYPE);
+        picker.show(requireFragmentManager(), DIALOG_EVENT_TYPE);
+    }
+
+    private void onTimeSelected(Date date) {
+
+    }
+    private void onDateSelected(Date date){}
+    private void onTypeSelected(EventType eventType){}
+
     /**
      * When an EditText updates we update the corresponding Event field. Need to register this
      * object with the EditText objects with addTextChangedListener(this).
