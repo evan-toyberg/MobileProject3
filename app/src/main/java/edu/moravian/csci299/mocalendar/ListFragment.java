@@ -1,11 +1,17 @@
 package edu.moravian.csci299.mocalendar;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -233,8 +239,86 @@ public class ListFragment extends Fragment {
         public int getItemCount() {
             return events.size();
         }
+
+        private Context context = getContext();
+
+        /**
+         * @return the Context for the adapter
+         */
+        public Context getContext() {
+            return context;
+        }
     }
-    // TODO: some code for the swipe-to-delete?
+
+// TODO: some code for the swipe-to-delete
+
+    private class SwipeToDelete extends ItemTouchHelper.SimpleCallback {
+
+        private ListFragment.EventListAdapter mAdapter;
+
+        private Drawable icon;
+        private final ColorDrawable background;
+
+
+        public SwipeToDelete(ListFragment.EventListAdapter adapter) {
+            super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+            mAdapter = adapter;
+            // TODO this might work...
+            icon = ContextCompat.getDrawable(mAdapter.getContext(),
+                    R.drawable.ic_delete_white);
+            background = new ColorDrawable(Color.RED);
+        }
+
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            // used for up and down movements
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            // TODO this might not work
+            CalendarRepository.get().removeEvent(events.get(viewHolder.getAdapterPosition()));
+
+        }
+
+        @Override
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+
+            View itemView = viewHolder.itemView;
+            int backgroundCornerOffset = 20; //so background is behind the rounded corners of itemView
+
+            int iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+            int iconTop = itemView.getTop() + (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+            int iconBottom = iconTop + icon.getIntrinsicHeight();
+
+            if (dX > 0) { // Swiping to the right
+                int iconLeft = itemView.getLeft() + iconMargin + icon.getIntrinsicWidth();
+                int iconRight = itemView.getLeft() + iconMargin;
+                icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+
+                background.setBounds(itemView.getLeft(), itemView.getTop(),
+                        itemView.getLeft() + ((int) dX) + backgroundCornerOffset, itemView.getBottom());
+            } else if (dX < 0) { // Swiping to the left
+                int iconLeft = itemView.getRight() - iconMargin - icon.getIntrinsicWidth();
+                int iconRight = itemView.getRight() - iconMargin;
+                // TODO try with above code, then below. Below should fix a bug
+//                int iconLeft = itemView.getLeft() + iconMargin;
+//                int iconRight = itemView.getLeft() + iconMargin + icon.getIntrinsicWidth();
+                icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+
+                background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
+                        itemView.getTop(), itemView.getRight(), itemView.getBottom());
+            } else { // view is unSwiped
+                icon.setBounds(0, 0, 0, 0);
+                background.setBounds(0, 0, 0, 0);
+            }
+
+            background.draw(c);
+            icon.draw(c);
+        }
+    }
 
     // TODO: some code for the menu options?
 
