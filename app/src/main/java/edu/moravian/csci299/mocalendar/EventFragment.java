@@ -40,6 +40,7 @@ public class EventFragment extends Fragment implements TextWatcher {
     private Event event;
     private TextView dateView, endTimeView, startTimeView, tillView;
     private EditText description, name;
+
     private ImageView typeView;
 
     /**
@@ -79,11 +80,11 @@ public class EventFragment extends Fragment implements TextWatcher {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View base = inflater.inflate(R.layout.fragment_event, container, false);
+        View base = inflater.inflate(R.layout.event_type_item, container, false);
 
         // TODO
 
-        description = base.findViewById(R.id.fragment_container);
+//        description = base.findViewById(R.id.description);
 
         typeView = base.findViewById(R.id.eventTypeIcon);
         typeView.setOnClickListener(v -> {
@@ -91,31 +92,30 @@ public class EventFragment extends Fragment implements TextWatcher {
         });
 
 
-        startTimeView = base.findViewById(R.id.calendarView);
-        startTimeView.setOnClickListener(v -> {
-            showTimePicker(true);
-        });
+//        startTimeView = base.findViewById(R.id.calendarView);
+//        startTimeView.setOnClickListener(v -> {
+//            showTimePicker(true);
+//        });
 
 
-        tillView = base.findViewById(R.id.fragment_container);
-        tillView.setOnClickListener(v -> {
+//        tillView = base.findViewById(R.id.fragment_container);
+//        tillView.setOnClickListener(v -> {
+//
+//        });
+//
+//        endTimeView = base.findViewById(R.id.fragment_container);
+//        endTimeView.setOnClickListener(v -> {
+//            showTimePicker(false);
+//        });
+//
+//        dateView = base.findViewById(R.id.fragment_container);
+//        dateView.setOnClickListener(v -> {
+//            showDatePicker();
+//        });
+//        name = base.findViewById(R.id.eventTypeName);
+//        name.addTextChangedListener(this);
 
-        });
 
-        endTimeView = base.findViewById(R.id.fragment_container);
-        endTimeView.setOnClickListener(v -> {
-            showTimePicker(false);
-        });
-
-        dateView = base.findViewById(R.id.fragment_container);
-        dateView.setOnClickListener(v -> {
-            showDatePicker();
-        });
-        name = base.findViewById(R.id.eventTypeName);
-        name.addTextChangedListener(this);
-
-
-//        base.findViewById(R.id.calendarView);
         // Return the base view
         return base;
     }
@@ -140,16 +140,16 @@ public class EventFragment extends Fragment implements TextWatcher {
     private void updateUI() {
         // TODO
         typeView.setImageResource(event.type.iconResourceId);
-        name.setText(event.name);
-        dateView.setText(DateUtils.toFullDateString(event.startTime));
-        startTimeView.setText(DateUtils.toTimeString(event.startTime));
-
-        //Might be .setVisibility() instead of setText for a couple of these
-        tillView.setText(DateUtils.toDateString(event.endTime));
+//        name.setText(event.name);
+//        dateView.setText(DateUtils.toFullDateString(event.startTime));
+//        startTimeView.setText(DateUtils.toTimeString(event.startTime));
+//
+//        //Might be .setVisibility() instead of setText for a couple of these
+//        tillView.setText(DateUtils.toDateString(event.endTime));
 //        tillView.setVisibility();
-        //
-        endTimeView.setText(DateUtils.toTimeString(event.endTime));
-        description.setText(event.description);
+//
+//        endTimeView.setText(DateUtils.toTimeString(event.endTime));
+//        description.setText(event.description);
 
     }
 
@@ -180,8 +180,12 @@ public class EventFragment extends Fragment implements TextWatcher {
     private void onTimeSelected(Date date) {
 
     }
-    private void onDateSelected(Date date){}
-    private void onTypeSelected(EventType eventType){}
+    private void onDateSelected(Date date){
+
+    }
+    private void onTypeSelected(EventType eventType){
+
+    }
 
     /**
      * When an EditText updates we update the corresponding Event field. Need to register this
@@ -191,8 +195,8 @@ public class EventFragment extends Fragment implements TextWatcher {
      */
     @Override
     public void afterTextChanged(Editable s) {
-        name.getText();
-
+        event.name = name.getText().toString();
+        event.description = description.getText().toString();
     }
 
     /**

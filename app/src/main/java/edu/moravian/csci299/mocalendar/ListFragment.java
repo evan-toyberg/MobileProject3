@@ -95,7 +95,6 @@ public class ListFragment extends Fragment {
         onDateChange();
         // TODO: maybe something related to the menu?
 
-
         // Think this is all for menu
         setHasOptionsMenu(true);
     }
@@ -128,12 +127,16 @@ public class ListFragment extends Fragment {
     private void onDateChange() {
         // TODO
 //        eventDataItems.removeObservers(this);
-//        eventDataItems = CalendarRepository.get().getAllEvents();
-//        eventDataItems.observe(this, events -> {
-//            this.events = events;
+        eventDataItems = CalendarRepository.get().getAllEvents();
+        eventDataItems.observe(this, events -> {
+            this.events = events;
+            listView.getAdapter().notifyDataSetChanged();
+
+//            dateText.setText(DateUtils.toFullDateString(date));
+        });
+
+//        CalendarRepository.get().getAllEvents().observe(this, events -> {
 //            listView.getAdapter().notifyDataSetChanged();
-//
-//            //            dateText.setText(DateUtils.toFullDateString(date));
 //        });
 
     }
@@ -157,7 +160,17 @@ public class ListFragment extends Fragment {
             event.name = "New Event";
             event.startTime = new Date();
             event.endTime = new Date();
-            event.description = "";
+            event.description = "Enter event description";
+
+            CalendarRepository.get().addEvent(event);
+            callbacks.onEventSelected(event);
+            return true;
+        } else if (item.getItemId() == R.id.new_assignment) {
+            Event event = new Event();
+            event.name = "New Assignment";
+            event.startTime = new Date();
+            event.endTime = new Date();
+            event.description = "Enter assignment description";
 
             CalendarRepository.get().addEvent(event);
             callbacks.onEventSelected(event);
