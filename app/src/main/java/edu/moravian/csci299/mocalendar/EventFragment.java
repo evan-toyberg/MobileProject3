@@ -84,7 +84,7 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
 
         // TODO
 
-        description = base.findViewById(R.id.decription);
+        description = base.findViewById(R.id.description);
         description.addTextChangedListener(this);
 
         typeView = base.findViewById(R.id.eventTypeIcon);
@@ -93,10 +93,10 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
         });
 
 
-//        startTimeView = base.findViewById(R.id.);
-//        startTimeView.setOnClickListener(v -> {
-//            showTimePicker(true);
-//        });
+        startTimeView = base.findViewById(R.id.startTime);
+        startTimeView.setOnClickListener(v -> {
+            showTimePicker(true);
+        });
 
 
 //        tillView = base.findViewById(R.id.);
@@ -104,15 +104,15 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
 //
 //        });
 //
-//        endTimeView = base.findViewById(R.id.);
-//        endTimeView.setOnClickListener(v -> {
-//            showTimePicker(false);
-//        });
-//
-//        dateView = base.findViewById(R.id.);
-//        dateView.setOnClickListener(v -> {
-//            showDatePicker();
-//        });
+        endTimeView = base.findViewById(R.id.endTime);
+        endTimeView.setOnClickListener(v -> {
+            showTimePicker(false);
+        });
+
+        dateView = base.findViewById(R.id.dateView);
+        dateView.setOnClickListener(v -> {
+            showDatePicker();
+        });
         eventNameView = base.findViewById(R.id.eventTypeName);
         eventNameView.addTextChangedListener(this);
 
@@ -129,9 +129,7 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
      */
     @Override
     public void onStop() {
-        //TODO: Have to save more info
         super.onStop();
-        event.description = description.getText().toString();
         CalendarRepository.get().updateEvent(event);
     }
 
@@ -141,16 +139,15 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
     private void updateUI() {
         // TODO
         typeView.setImageResource(event.type.iconResourceId);
-//        name.setText(event.name);
-//        dateView.setText(DateUtils.toFullDateString(event.startTime));
+        eventNameView.setText(event.name);
+        dateView.setText(DateUtils.toFullDateString(event.startTime));
 //        startTimeView.setText(DateUtils.toTimeString(event.startTime));
-//
-//        //Might be .setVisibility() instead of setText for a couple of these
+
+        //Might be .setVisibility() instead of setText for a couple of these
 //        tillView.setText(DateUtils.toDateString(event.endTime));
-//        tillView.setVisibility();
-//
+
 //        endTimeView.setText(DateUtils.toTimeString(event.endTime));
-//        description.setText(event.description);
+        description.setText(event.description);
 
     }
 
@@ -177,8 +174,6 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
         picker.setTargetFragment(this, REQUEST_EVENT_TYPE);
         picker.show(requireFragmentManager(), DIALOG_EVENT_TYPE);
     }
-
-
 
 
     /**
@@ -208,17 +203,28 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
     }
 
     @Override
-    public void onTimeChanged(Date date) {
-
+    public void onTimeChanged(Boolean isStartTime, Date date) {
+        if (isStartTime) {
+            event.startTime = date;
+            startTimeView.setText(DateUtils.toTimeString(date));
+        }
+        else{
+            endTimeView.setText(DateUtils.toTimeString(date));
+        }
+        updateUI();
     }
 
     @Override
     public void onDateSelected(Date date) {
+        event.startTime = date;
+        event.endTime = date;
+        updateUI();
 
     }
 
     @Override
     public void onTypeSelected(EventType type) {
-
+        typeView.setImageResource(event.type.iconResourceId);
+        updateUI();
     }
 }

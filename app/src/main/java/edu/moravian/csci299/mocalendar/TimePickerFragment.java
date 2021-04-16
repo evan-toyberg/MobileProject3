@@ -32,13 +32,13 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     private static final String ARG_TIME = "time";
 
     interface Callbacks {
-        void onTimeChanged(Date date);
+        void onTimeChanged(Boolean isStartTime, Date date);
     }
 
     public static TimePickerFragment newInstance(Boolean isStartTime, Date time) {
         TimePickerFragment fragment = new TimePickerFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_TIME, time.getTime());
+        args.putSerializable(ARG_TIME, time);
         args.putBoolean(ARG_IS_START_TIME, isStartTime);
         fragment.setArguments(args);
         return fragment;
@@ -47,15 +47,17 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Date date = DateUtils.useDateOrNow((Date) getArguments().getSerializable(ARG_TIME));
-        int[] time = DateUtils.getHourMinute(date);
-        return new TimePickerDialog(requireContext(), this, time[0], time[1], true);
+        assert getArguments() != null;
+        Date time = DateUtils.useDateOrNow((Date) getArguments().get(ARG_TIME));
+        int[] hourMinute = DateUtils.getHourMinute(time);
+        return new TimePickerDialog(requireContext(), this, hourMinute[0], hourMinute[1], true);
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        getArguments().getBoolean(ARG_IS_START_TIME);
-        ((TimePickerFragment.Callbacks) Objects.requireNonNull(getTargetFragment())).onTimeChanged(DateUtils.getTime(hourOfDay, minute));
+
+        ((TimePickerFragment.Callbacks) Objects.requireNonNull(getTargetFragment()))
+                .onTimeChanged(getArguments().getBoolean(ARG_IS_START_TIME), DateUtils.getTime(hourOfDay, minute));
 
     }
 }
