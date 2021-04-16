@@ -17,32 +17,79 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="0"
             android:contentDescription="@string/event_icon"
             android:padding="5dp"
-            app:srcCompat="@drawable/event" />
+            app:srcCompat="@drawable/event"
+            tools:ignore="NestedWeights" />
 
         <EditText
             android:id="@+id/eventTypeName"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:padding="5dp"
-            tools:text="Event Type Name"
+            android:hint="@string/event_type_name"
             android:autofillHints="Event name"
-            android:inputType="" />
+            android:inputType=""
+            tools:ignore="NestedWeights" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/dateView"
+            android:layout_width="91dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=""
+            tools:text="Friday April 15, 2021" />
+
+        <TextView
+            android:id="@+id/atTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/atText" />
+        <TextView
+            android:id="@+id/startTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=""
+            tools:text="12:00"/>
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/tillText" />
+
+        <TextView
+            android:id="@+id/endTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=""
+            tools:text="1:00"/>
     </LinearLayout>
 
     <EditText
-        android:id="@+id/decription"
+        android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_weight="0"
-        android:textSize="15sp"
-        tools:text="Enter Event description"
         android:autofillHints="Event Description"
-        android:inputType="" />
+
+        android:hint="@string/event_description"
+        android:inputType=""
+        android:textSize="15sp"
+        tools:text="Enter Event description" />
 
 
 </LinearLayout>

@@ -4,5 +4,9 @@
     <string name="event_type">Event Type</string>
     <string name="new_event">Event</string>
     <string name="new_assignment">New Assignment</string>
+    <string name="event_type_name">Event Type Name</string>
+    <string name="event_description">Event Description</string>
+    <string name="atText">at</string>
+    <string name="tillText">till</string>
 
 </resources>
