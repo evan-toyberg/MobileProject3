@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.Date;
 import java.util.Collections;
 import java.util.List;
@@ -115,12 +117,14 @@ public class ListFragment extends Fragment {
         // Inflate the layout for this fragment
         View base = inflater.inflate(R.layout.fragment_list, container, false);
         // TODO
-//        dateText = base.findViewById(R.id.dateView);
-        listView = new RecyclerView(getContext()); // Have to init recycler view
+        listView = base.findViewById(R.id.list_view); // Have to init recycler view
         listView.setLayoutManager(new LinearLayoutManager(getContext()));
-        listView.setAdapter(new EventListAdapter());
+        EventListAdapter adapter = new EventListAdapter();
+        listView.setAdapter(adapter);
 
-        dateText = base.findViewById(R.id.dateView);
+        dateText = base.findViewById(R.id.date_text);
+
+
 
         // return the base view
         return base;
@@ -132,16 +136,13 @@ public class ListFragment extends Fragment {
      */
     private void onDateChange() {
         // TODO
-        eventDataItems = CalendarRepository.get().getAllEvents();
+        eventDataItems = CalendarRepository.get().getEventsOnDay(date);
         eventDataItems.observe(this, events -> {
             this.events = events;
             listView.getAdapter().notifyDataSetChanged();
-//            dateText.setText(DateUtils.toFullDateString(date));
-        });
+            dateText.setText(DateUtils.toFullDateString(date));
 
-//        CalendarRepository.get().getAllEvents().observe(this, events -> {
-//            listView.getAdapter().notifyDataSetChanged();
-//        });
+        });
 
     }
 
@@ -162,8 +163,8 @@ public class ListFragment extends Fragment {
         if (item.getItemId() == R.id.new_event) {
             Event event = new Event();
             event.name = "New Event";
-            event.startTime = new Date();
-            event.endTime = new Date();
+            event.startTime = date;
+            event.endTime = date;
             event.description = "Enter event description";
 
             CalendarRepository.get().addEvent(event);
@@ -172,7 +173,8 @@ public class ListFragment extends Fragment {
         } else if (item.getItemId() == R.id.new_assignment) {
             Event event = new Event();
             event.name = "New Assignment";
-            event.startTime = new Date();
+            event.startTime = date;
+            event.endTime = date;
             event.description = "Enter assignment description";
 
             CalendarRepository.get().addEvent(event);
@@ -187,11 +189,15 @@ public class ListFragment extends Fragment {
 
     private class EventViewHolder extends RecyclerView.ViewHolder {
         Event event;
-        final TextView name;
+        TextView name, description, startTime, endTime;
 
         public EventViewHolder(@NonNull View eventView) {
             super(eventView);
-            name = eventView.findViewById(R.id.eventTypeName);
+            name = eventView.findViewById(R.id.event_name);
+            description = eventView.findViewById(R.id.event_description);
+            startTime = eventView.findViewById(R.id.event_start_time);
+            endTime = eventView.findViewById(R.id.event_end_time);
+
             eventView.setOnClickListener(v -> {
                 callbacks.onEventSelected(event);
             });
@@ -210,7 +216,7 @@ public class ListFragment extends Fragment {
         @NonNull
         @Override
         public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_type_item, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
             return new EventViewHolder(v);
         }
 
@@ -224,9 +230,14 @@ public class ListFragment extends Fragment {
          */
         @Override
         public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
+
             Event event = events.get(position);
             holder.event = event;
             holder.name.setText(event.name);
+            holder.description.setText(event.description);
+            holder.startTime.setText(DateUtils.toTimeString(date));
+            if(event.endTime != null){ holder.endTime.setText(DateUtils.toTimeString(date)); }
+
         }
 
         /**
@@ -248,6 +259,26 @@ public class ListFragment extends Fragment {
     }
 
 // TODO: some code for the swipe-to-delete
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private class SwipeToDelete extends ItemTouchHelper.SimpleCallback {
 
@@ -317,7 +348,6 @@ public class ListFragment extends Fragment {
         }
     }
 
-    // TODO: some code for the menu options?
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
