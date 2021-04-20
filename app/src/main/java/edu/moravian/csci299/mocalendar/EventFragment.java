@@ -80,7 +80,7 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View base = inflater.inflate(R.layout.event_type_item, container, false);
+        View base = inflater.inflate(R.layout.fragment_event, container, false);
 
         // TODO
 
@@ -211,7 +211,7 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
         else{
             endTimeView.setText(DateUtils.toTimeString(date));
         }
-        updateUI();
+
     }
 
     @Override

@@ -50,7 +50,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         assert getArguments() != null;
         Date time = DateUtils.useDateOrNow((Date) getArguments().get(ARG_TIME));
         int[] hourMinute = DateUtils.getHourMinute(time);
-        return new TimePickerDialog(requireContext(), this, hourMinute[0], hourMinute[1], true);
+        return new TimePickerDialog(requireContext(), this, hourMinute[0], hourMinute[1], false);
     }
 
     @Override

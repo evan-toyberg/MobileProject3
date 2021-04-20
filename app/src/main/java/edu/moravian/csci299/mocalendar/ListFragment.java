@@ -115,12 +115,12 @@ public class ListFragment extends Fragment {
         // Inflate the layout for this fragment
         View base = inflater.inflate(R.layout.fragment_list, container, false);
         // TODO
-//        dateText.findViewById(R.id.calendarView);
+//        dateText = base.findViewById(R.id.dateView);
         listView = new RecyclerView(getContext()); // Have to init recycler view
         listView.setLayoutManager(new LinearLayoutManager(getContext()));
         listView.setAdapter(new EventListAdapter());
 
-//        dateText = base.findViewById(R.id.)
+        dateText = base.findViewById(R.id.dateView);
 
         // return the base view
         return base;
@@ -132,12 +132,10 @@ public class ListFragment extends Fragment {
      */
     private void onDateChange() {
         // TODO
-//        eventDataItems.removeObservers(this);
         eventDataItems = CalendarRepository.get().getAllEvents();
         eventDataItems.observe(this, events -> {
             this.events = events;
             listView.getAdapter().notifyDataSetChanged();
-
 //            dateText.setText(DateUtils.toFullDateString(date));
         });
 
@@ -175,7 +173,6 @@ public class ListFragment extends Fragment {
             Event event = new Event();
             event.name = "New Assignment";
             event.startTime = new Date();
-            event.endTime = new Date();
             event.description = "Enter assignment description";
 
             CalendarRepository.get().addEvent(event);
