@@ -207,8 +207,7 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
         if (isStartTime) {
             event.startTime = date;
             startTimeView.setText(DateUtils.toTimeString(date));
-        }
-        else{
+        } else {
             endTimeView.setText(DateUtils.toTimeString(date));
         }
 
@@ -224,7 +223,7 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
 
     @Override
     public void onTypeSelected(EventType type) {
-        typeView.setImageResource(event.type.iconResourceId);
+        event.type = type;
         updateUI();
     }
 }
