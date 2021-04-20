@@ -28,10 +28,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:padding="5dp"
-            android:hint="@string/event_type_name"
             android:autofillHints="Event name"
+            android:hint="@string/event_type_name"
             android:inputType=""
+            android:padding="5dp"
+            android:textSize="30sp"
+            android:textAllCaps="true"
+            android:textStyle="bold"
             tools:ignore="NestedWeights" />
     </LinearLayout>
 
@@ -43,24 +46,27 @@
 
         <TextView
             android:id="@+id/dateView"
-            android:layout_width="91dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text=""
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
             tools:text="Friday April 15, 2021" />
 
         <TextView
             android:id="@+id/atTextView"
-            android:layout_width="1dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
             android:text="@string/atText" />
 
         <TextView
             android:id="@+id/startTime"
-            android:layout_width="72dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
             android:text=""
             tools:text="12:00" />
 
@@ -68,14 +74,18 @@
             android:id="@+id/tillView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/tillText" />
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="@string/tillText"
+            />
 
         <TextView
             android:id="@+id/endTime"
-            android:layout_width="90dp"
+            android:layout_width="48dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight=".5"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
             android:text=""
             tools:text="1:00" />
     </LinearLayout>
@@ -86,10 +96,10 @@
         android:layout_height="40dp"
         android:layout_weight="0"
         android:autofillHints="Event Description"
-
+        android:padding="5dp"
         android:hint="@string/event_description"
         android:inputType=""
-        android:textSize="15sp"
+        android:textSize="20sp"
         tools:text="Enter Event description" />
 
 
