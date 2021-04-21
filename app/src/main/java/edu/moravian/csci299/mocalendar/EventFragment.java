@@ -197,12 +197,12 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
     @Override
     public void onTimeChanged(Boolean isStartTime, Date date) {
         if (isStartTime) {
-            Date originalStart = DateUtils.combineDateAndTime(date, event.startTime);
-            event.startTime = date;
+            Date originalStart = event.startTime;
+            event.startTime = DateUtils.combineDateAndTime(event.startTime, date);
             event.endTime = DateUtils.getNewEndTime(originalStart, event.startTime, event.endTime);
 
         } else {
-            event.endTime = DateUtils.fixEndTime(event.startTime, event.endTime);
+            event.endTime = DateUtils.fixEndTime(event.startTime, date);
 
         }
         updateUI();
@@ -212,11 +212,10 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
 
     @Override
     public void onDateSelected(Date date) {
-        if (date == event.startTime) {
-            event.startTime = DateUtils.combineDateAndTime(date, event.startTime);
-        } else {
-            event.endTime = DateUtils.combineDateAndTime(date, event.endTime);
-        }
+        event.startTime = date;
+
+        event.endTime = date;
+
         updateUI();
 
     }
