@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import java.sql.Time;
 import java.util.Date;
 import java.util.Objects;
 
@@ -56,6 +55,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
+        assert getArguments() != null;
         ((TimePickerFragment.Callbacks) Objects.requireNonNull(getTargetFragment()))
                 .onTimeChanged(getArguments().getBoolean(ARG_IS_START_TIME), DateUtils.getTime(hourOfDay, minute));
 

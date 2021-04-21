@@ -1,14 +1,12 @@
 package edu.moravian.csci299.mocalendar;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * The main (and only) activity for the application that hosts all of the fragments.

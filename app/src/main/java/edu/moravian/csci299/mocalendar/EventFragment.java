@@ -38,7 +38,7 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
 
     // argument once loaded from database
     private Event event;
-    private TextView dateView, endTimeView, startTimeView, tillView;
+    private TextView dateView, endTimeView, startTimeView;
     private EditText description, eventNameView;
 
     private ImageView typeView;
@@ -64,6 +64,7 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        assert getArguments() != null;
         CalendarRepository.get().getEventById((UUID) getArguments()
                 .getSerializable(ARG_EVENT_ID)).observe(this, event -> {
             this.event = event;
@@ -88,26 +89,18 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
         description.addTextChangedListener(this);
 
         typeView = base.findViewById(R.id.eventTypeIcon);
-        typeView.setOnClickListener(v -> {
-            showEventTypePicker();
-        });
+        typeView.setOnClickListener(v -> showEventTypePicker());
 
 
         startTimeView = base.findViewById(R.id.startTime);
-        startTimeView.setOnClickListener(v -> {
-            showTimePicker(true);
-        });
+        startTimeView.setOnClickListener(v -> showTimePicker(true));
 
 
         endTimeView = base.findViewById(R.id.endTime);
-        endTimeView.setOnClickListener(v -> {
-            showTimePicker(false);
-        });
+        endTimeView.setOnClickListener(v -> showTimePicker(false));
 
         dateView = base.findViewById(R.id.dateView);
-        dateView.setOnClickListener(v -> {
-            showDatePicker();
-        });
+        dateView.setOnClickListener(v -> showDatePicker());
         eventNameView = base.findViewById(R.id.eventTypeName);
         eventNameView.addTextChangedListener(this);
 
@@ -147,9 +140,9 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
     private void showTimePicker(Boolean isStartTime) {
         TimePickerFragment picker;
         if (isStartTime) {
-            picker = TimePickerFragment.newInstance(isStartTime, event.startTime);
+            picker = TimePickerFragment.newInstance(true, event.startTime);
         } else
-            picker = TimePickerFragment.newInstance(isStartTime, event.endTime);
+            picker = TimePickerFragment.newInstance(false, event.endTime);
 
         picker.setTargetFragment(this, REQUEST_TIME);
         picker.show(requireFragmentManager(), DIALOG_TIME);

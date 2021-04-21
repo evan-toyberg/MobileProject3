@@ -25,11 +25,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
 
 import java.util.Date;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A fragment that displays a list of events. The list is a RecyclerView. When an event on the list
@@ -91,6 +91,7 @@ public class ListFragment extends Fragment {
      */
     public void setDay(Date date) {
         this.date = date;
+        assert getArguments() != null;
         getArguments().putSerializable(ARG_DATE, date);
         onDateChange();
     }
@@ -101,6 +102,7 @@ public class ListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        assert getArguments() != null;
         date = DateUtils.useDateOrNow((Date) getArguments().getSerializable(ARG_DATE));
         onDateChange();
 
@@ -137,7 +139,7 @@ public class ListFragment extends Fragment {
         eventDataItems.observe(this, events -> {
             this.events = events;
             Log.e("onDateChangeEvents", events.toString());
-            listView.getAdapter().notifyDataSetChanged();
+            Objects.requireNonNull(listView.getAdapter()).notifyDataSetChanged();
             dateText.setText(DateUtils.toFullDateString(date));
 
         });
@@ -194,9 +196,7 @@ public class ListFragment extends Fragment {
             typeView = eventView.findViewById(R.id.imageView);
 
 
-            eventView.setOnClickListener(v -> {
-                callbacks.onEventSelected(event);
-            });
+            eventView.setOnClickListener(v -> callbacks.onEventSelected(event));
         }
     }
 

@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * A fragment that acts as a popup window for picking a date. Any fragment that
@@ -56,6 +57,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        assert getArguments() != null;
         Date date = DateUtils.useDateOrNow((Date)getArguments().getSerializable(ARG_DATE));
         int[] year_mon_day = DateUtils.getYearMonthDay(date);
         return new DatePickerDialog(requireContext(), this, year_mon_day[0], year_mon_day[1], year_mon_day[2]);
@@ -71,7 +73,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
      */
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        ((Callbacks)getTargetFragment()).onDateSelected(DateUtils.getDate(year, month, dayOfMonth));
+        ((Callbacks) Objects.requireNonNull(getTargetFragment())).onDateSelected(DateUtils.getDate(year, month, dayOfMonth));
     }
 }
 
