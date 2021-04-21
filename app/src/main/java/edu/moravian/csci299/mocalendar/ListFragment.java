@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -101,9 +102,7 @@ public class ListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         date = DateUtils.useDateOrNow((Date) getArguments().getSerializable(ARG_DATE));
         onDateChange();
-        // TODO: maybe something related to the menu?
 
-        // Think this is all for menu
         setHasOptionsMenu(true);
     }
 
@@ -116,18 +115,13 @@ public class ListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View base = inflater.inflate(R.layout.fragment_list, container, false);
-        // TODO
         listView = base.findViewById(R.id.list_view); // Have to init recycler view
         listView.setLayoutManager(new LinearLayoutManager(getContext()));
         EventListAdapter adapter = new EventListAdapter();
         listView.setAdapter(adapter);
-
         dateText = base.findViewById(R.id.date_text);
 
-
-
-        // return the base view
-        return base;
+        return base; // return the base view
     }
 
     /**
@@ -135,10 +129,13 @@ public class ListFragment extends Fragment {
      * the UI.
      */
     private void onDateChange() {
-        // TODO
-        eventDataItems = CalendarRepository.get().getEventsOnDay(date);
+        Log.e("onDateChangeDate", DateUtils.toTimeString(date));
+        int[] yearMonthDay = DateUtils.getYearMonthDay(date);
+
+        eventDataItems = CalendarRepository.get().getEventsOnDay(DateUtils.getDate(yearMonthDay[0], yearMonthDay[1], yearMonthDay[2]));
         eventDataItems.observe(this, events -> {
             this.events = events;
+            Log.e("onDateChangeEvents", events.toString());
             listView.getAdapter().notifyDataSetChanged();
             dateText.setText(DateUtils.toFullDateString(date));
 

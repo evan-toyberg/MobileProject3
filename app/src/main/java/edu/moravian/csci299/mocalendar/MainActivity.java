@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
         if (calendarFragment == null) {
             calendarFragment = CalendarFragment.newInstance();
         }
-        listFragment = ListFragment.newInstance();
+        listFragment = ListFragment.newInstance(new Date());
         transaction.add(R.id.fragment_container, calendarFragment).add(R.id.fragment_container, listFragment).commit();
 
     }
