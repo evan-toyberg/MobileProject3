@@ -22,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -159,20 +160,16 @@ public class ListFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.new_event) {
             Event event = new Event();
-            event.name = "New Event";
             event.startTime = date;
-            event.endTime = date;
-            event.description = "Enter event description";
+            event.endTime = new Date(date.getTime() + 3600000);
 
             CalendarRepository.get().addEvent(event);
             callbacks.onEventSelected(event);
             return true;
         } else if (item.getItemId() == R.id.new_assignment) {
             Event event = new Event();
-            event.name = "New Assignment";
             event.startTime = date;
-            event.endTime = date;
-            event.description = "Enter assignment description";
+            event.endTime = new Date(date.getTime() + 3600000);
 
             CalendarRepository.get().addEvent(event);
             callbacks.onEventSelected(event);
@@ -182,11 +179,11 @@ public class ListFragment extends Fragment {
 
 
     }
-    // TODO: some code for the recycler view?
 
     private class EventViewHolder extends RecyclerView.ViewHolder {
         Event event;
         TextView name, description, startTime, endTime;
+        ImageView typeView;
 
         public EventViewHolder(@NonNull View eventView) {
             super(eventView);
@@ -194,6 +191,8 @@ public class ListFragment extends Fragment {
             description = eventView.findViewById(R.id.event_description);
             startTime = eventView.findViewById(R.id.event_start_time);
             endTime = eventView.findViewById(R.id.event_end_time);
+            typeView = eventView.findViewById(R.id.imageView);
+
 
             eventView.setOnClickListener(v -> {
                 callbacks.onEventSelected(event);
@@ -233,7 +232,10 @@ public class ListFragment extends Fragment {
             holder.name.setText(event.name);
             holder.description.setText(event.description);
             holder.startTime.setText(DateUtils.toTimeString(date));
-            if(event.endTime != null){ holder.endTime.setText(DateUtils.toTimeString(date)); }
+            holder.typeView.setImageResource(event.type.iconResourceId);
+            if (event.endTime != null) {
+                holder.endTime.setText(DateUtils.toTimeString(date));
+            }
 
         }
 
@@ -256,25 +258,6 @@ public class ListFragment extends Fragment {
     }
 
 // TODO: some code for the swipe-to-delete
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private class SwipeToDelete extends ItemTouchHelper.SimpleCallback {

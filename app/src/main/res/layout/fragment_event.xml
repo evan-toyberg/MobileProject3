@@ -24,18 +24,15 @@
 
         <EditText
             android:id="@+id/eventTypeName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:autofillHints="Event name"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:autofillHints="Event Name"
             android:hint="@string/event_type_name"
             android:inputType=""
             android:padding="5dp"
-            android:textSize="30sp"
-            android:textAllCaps="true"
+            android:textSize="20sp"
             android:textStyle="bold"
-            tools:ignore="NestedWeights" />
+            tools:text="Enter Event Name" />
     </LinearLayout>
 
     <LinearLayout
@@ -81,9 +78,8 @@
 
         <TextView
             android:id="@+id/endTime"
-            android:layout_width="48dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight=".5"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
             android:text=""
