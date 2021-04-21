@@ -132,18 +132,15 @@ public class ListFragment extends Fragment {
      * the UI.
      */
     private void onDateChange() {
-        Log.e("onDateChangeDate", DateUtils.toTimeString(date));
         int[] yearMonthDay = DateUtils.getYearMonthDay(date);
-
+        // get events for currently selected date from 12 AM to 12 PM
         eventDataItems = CalendarRepository.get().getEventsOnDay(DateUtils.getDate(yearMonthDay[0], yearMonthDay[1], yearMonthDay[2]));
         eventDataItems.observe(this, events -> {
             this.events = events;
-            Log.e("onDateChangeEvents", events.toString());
             Objects.requireNonNull(listView.getAdapter()).notifyDataSetChanged();
             dateText.setText(DateUtils.toFullDateString(date));
 
         });
-
     }
 
     @Override
@@ -231,10 +228,10 @@ public class ListFragment extends Fragment {
             holder.event = event;
             holder.name.setText(event.name);
             holder.description.setText(event.description);
-            holder.startTime.setText(DateUtils.toTimeString(date));
+            holder.startTime.setText(DateUtils.toTimeString(event.startTime));
             holder.typeView.setImageResource(event.type.iconResourceId);
             if (event.endTime != null) {
-                holder.endTime.setText(DateUtils.toTimeString(date));
+                holder.endTime.setText(DateUtils.toTimeString(event.endTime));
             }
 
         }
