@@ -262,8 +262,8 @@ public class ListFragment extends Fragment {
      * Must be attached to the RecyclerView.
      */
     private class SwipeToDelete extends ItemTouchHelper.SimpleCallback {
-        private EventListAdapter adapter;
-        private Drawable icon;
+        private final EventListAdapter adapter;
+        private final Drawable icon;
         private final ColorDrawable background;
 
         public SwipeToDelete(EventListAdapter adapter) {
