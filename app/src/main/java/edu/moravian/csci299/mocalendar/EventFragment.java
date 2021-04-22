@@ -133,8 +133,6 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
         } else {
             endTimeView.setText(DateUtils.toTimeString(event.endTime));
         }
-
-
         description.setText(event.description);
 
     }
@@ -171,8 +169,11 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
      */
     @Override
     public void afterTextChanged(Editable s) {
-        event.name = eventNameView.getText().toString();
-        event.description = description.getText().toString();
+        if (s.equals(eventNameView.getText())) {
+            event.name = s.toString();
+        } else {
+            event.description = description.getText().toString();
+        }
     }
 
     /**
