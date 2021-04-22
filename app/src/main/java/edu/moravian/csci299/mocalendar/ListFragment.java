@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,8 +45,6 @@ public class ListFragment extends Fragment {
     // fragment initialization parameters
     private static final String ARG_DATE = "date";
 
-    // data
-    private LiveData<List<Event>> eventDataItems;
     private Date date;
     private List<Event> events = Collections.emptyList();
     private TextView dateText;
@@ -116,13 +113,19 @@ public class ListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        EventListAdapter adapter = new EventListAdapter();
+
         // Inflate the layout for this fragment
         View base = inflater.inflate(R.layout.fragment_list, container, false);
-        listView = base.findViewById(R.id.list_view); // Have to init recycler view
+
+        // setup RecyclerView
+        listView = base.findViewById(R.id.list_view);
         listView.setLayoutManager(new LinearLayoutManager(getContext()));
-        EventListAdapter adapter = new EventListAdapter();
         listView.setAdapter(adapter);
         dateText = base.findViewById(R.id.date_text);
+
+        // setup SwipeToDelete helper and attach it to the RecyclerView
+        new ItemTouchHelper(new SwipeToDelete(adapter)).attachToRecyclerView(listView);
 
         return base; // return the base view
     }
@@ -134,7 +137,7 @@ public class ListFragment extends Fragment {
     private void onDateChange() {
         int[] yearMonthDay = DateUtils.getYearMonthDay(date);
         // get events for currently selected date from 12 AM to 12 PM
-        eventDataItems = CalendarRepository.get().getEventsOnDay(DateUtils.getDate(yearMonthDay[0], yearMonthDay[1], yearMonthDay[2]));
+        LiveData<List<Event>> eventDataItems = CalendarRepository.get().getEventsOnDay(DateUtils.getDate(yearMonthDay[0], yearMonthDay[1], yearMonthDay[2]));
         eventDataItems.observe(this, events -> {
             this.events = events;
             Objects.requireNonNull(listView.getAdapter()).notifyDataSetChanged();
@@ -155,6 +158,24 @@ public class ListFragment extends Fragment {
         callbacks = null;
     }
 
+    /**
+     * Setup the menu for the fragment
+     *
+     * @param menu
+     * @param inflater
+     */
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.list_menu, menu);
+    }
+
+    /**
+     * Creates a new Event according to the item selected in the menu.
+     *
+     * @param item selected MenuItem from menu
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.new_event) {
@@ -179,6 +200,8 @@ public class ListFragment extends Fragment {
 
     }
 
+
+
     private class EventViewHolder extends RecyclerView.ViewHolder {
         Event event;
         TextView name, description, startTime, endTime;
@@ -192,10 +215,11 @@ public class ListFragment extends Fragment {
             endTime = eventView.findViewById(R.id.event_end_time);
             typeView = eventView.findViewById(R.id.imageView);
 
-
             eventView.setOnClickListener(v -> callbacks.onEventSelected(event));
         }
     }
+
+
 
     /**
      * The adapter for the items list to be displayed in a RecyclerView.
@@ -230,10 +254,7 @@ public class ListFragment extends Fragment {
             holder.description.setText(event.description);
             holder.startTime.setText(DateUtils.toTimeString(event.startTime));
             holder.typeView.setImageResource(event.type.iconResourceId);
-            if (event.endTime != null) {
-                holder.endTime.setText(DateUtils.toTimeString(event.endTime));
-            }
-
+            if (event.endTime != null) { holder.endTime.setText(DateUtils.toTimeString(event.endTime)); }
         }
 
         /**
@@ -243,50 +264,54 @@ public class ListFragment extends Fragment {
         public int getItemCount() {
             return events.size();
         }
-
-        private Context context = getContext();
-
-        /**
-         * @return the Context for the adapter
-         */
-        public Context getContext() {
-            return context;
-        }
     }
 
-// TODO: some code for the swipe-to-delete
 
-
+    /**
+     * Allows RecyclerView items to be swiped away and deleted.
+     * Must be attached to the RecyclerView.
+     */
     private class SwipeToDelete extends ItemTouchHelper.SimpleCallback {
-
-        private ListFragment.EventListAdapter mAdapter;
-
+        private EventListAdapter adapter;
         private Drawable icon;
         private final ColorDrawable background;
 
-
-        public SwipeToDelete(ListFragment.EventListAdapter adapter) {
+        public SwipeToDelete(EventListAdapter adapter) {
             super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
-            mAdapter = adapter;
-            // TODO this might work...
-            icon = ContextCompat.getDrawable(mAdapter.getContext(),
+            this.adapter = adapter;
+            icon = ContextCompat.getDrawable(getContext(),
                     R.drawable.ic_delete_white);
             background = new ColorDrawable(Color.RED);
         }
 
         @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            // used for up and down movements
-            return false;
-        }
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) { return false; }
 
+        /**
+         * Delete an item from the database when swiped in the fragment
+         *
+         * @param viewHolder
+         * @param direction
+         */
         @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            // TODO this might not work
-            CalendarRepository.get().removeEvent(events.get(viewHolder.getAdapterPosition()));
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAdapterPosition();
 
+            CalendarRepository.get().removeEvent(events.get(position)); // delete from database
+            adapter.notifyItemRemoved(position);
         }
 
+        /**
+         * Set colored background and image behind the item in recyclerView that is shown when swiped
+         *
+         * @param c
+         * @param recyclerView
+         * @param viewHolder
+         * @param dX
+         * @param dY
+         * @param actionState
+         * @param isCurrentlyActive
+         */
         @Override
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
@@ -308,9 +333,6 @@ public class ListFragment extends Fragment {
             } else if (dX < 0) { // Swiping to the left
                 int iconLeft = itemView.getRight() - iconMargin - icon.getIntrinsicWidth();
                 int iconRight = itemView.getRight() - iconMargin;
-                // TODO try with above code, then below. Below should fix a bug
-//                int iconLeft = itemView.getLeft() + iconMargin;
-//                int iconRight = itemView.getLeft() + iconMargin + icon.getIntrinsicWidth();
                 icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
 
                 background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
@@ -324,12 +346,4 @@ public class ListFragment extends Fragment {
             icon.draw(c);
         }
     }
-
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.list_menu, menu);
-    }
-
 }
