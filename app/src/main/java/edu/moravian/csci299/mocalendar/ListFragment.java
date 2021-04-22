@@ -171,7 +171,7 @@ public class ListFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.new_event) {
             Event event = new Event();
-            event.startTime = date;
+            event.startTime = DateUtils.useDateOrNow(date);
             event.endTime = new Date(date.getTime() + 3600000);
 
             CalendarRepository.get().addEvent(event);
@@ -179,7 +179,7 @@ public class ListFragment extends Fragment {
             return true;
         } else if (item.getItemId() == R.id.new_assignment) {
             Event event = new Event();
-            event.startTime = date;
+            event.startTime = DateUtils.useDateOrNow(date);
             event.type = EventType.ASSIGNMENT;
             CalendarRepository.get().addEvent(event);
             callbacks.onEventSelected(event);
