@@ -56,15 +56,6 @@ public class ListFragment extends Fragment {
         void onEventSelected(Event event);
     }
 
-    /**
-     * Use this factory method to create a new instance of this fragment that
-     * lists events for today.
-     *
-     * @return a new instance of fragment ListFragment
-     */
-    public static ListFragment newInstance() {
-        return newInstance(new Date());
-    }
 
     /**
      * Use this factory method to create a new instance of this fragment that
@@ -161,8 +152,8 @@ public class ListFragment extends Fragment {
     /**
      * Setup the menu for the fragment
      *
-     * @param menu
-     * @param inflater
+     * @param menu current menu
+     * @param inflater inflater for the menu layout
      */
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -174,7 +165,7 @@ public class ListFragment extends Fragment {
      * Creates a new Event according to the item selected in the menu.
      *
      * @param item selected MenuItem from menu
-     * @return
+     * @return boolean
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -290,8 +281,8 @@ public class ListFragment extends Fragment {
         /**
          * Delete an item from the database when swiped in the fragment
          *
-         * @param viewHolder
-         * @param direction
+         * @param viewHolder uses viewHolder to get the position
+         * @param direction direction the view is being swiped
          */
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
@@ -304,9 +295,9 @@ public class ListFragment extends Fragment {
         /**
          * Set colored background and image behind the item in recyclerView that is shown when swiped
          *
-         * @param c
-         * @param recyclerView
-         * @param viewHolder
+         * @param c canvas being used
+         * @param recyclerView recyclerView being used
+         * @param viewHolder viewHolder being used
          * @param dX
          * @param dY
          * @param actionState
