@@ -38,7 +38,7 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
 
     // argument once loaded from database
     private Event event;
-    private TextView dateView, endTimeView, startTimeView;
+    private TextView dateView, endTimeView, startTimeView, tillView;
     private EditText description, eventNameView;
 
     private ImageView typeView;
@@ -92,6 +92,8 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
         typeView.setOnClickListener(v -> showEventTypePicker());
 
 
+        tillView = base.findViewById(R.id.tillView);
+
         startTimeView = base.findViewById(R.id.startTime);
         startTimeView.setOnClickListener(v -> showTimePicker(true));
 
@@ -130,8 +132,13 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
         eventNameView.setText(event.name);
         dateView.setText(DateUtils.toFullDateString(event.startTime));
         startTimeView.setText(DateUtils.toTimeString(event.startTime));
+        if (event.type == EventType.ASSIGNMENT) {
+            tillView.setVisibility(View.GONE);
+        } else {
+            endTimeView.setText(DateUtils.toTimeString(event.endTime));
+        }
 
-        endTimeView.setText(DateUtils.toTimeString(event.endTime));
+
         description.setText(event.description);
 
     }
@@ -189,15 +196,21 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
 
     @Override
     public void onTimeChanged(Boolean isStartTime, Date date) {
-        if (isStartTime) {
-            Date originalStart = event.startTime;
-            event.startTime = DateUtils.combineDateAndTime(event.startTime, date);
-            event.endTime = DateUtils.getNewEndTime(originalStart, event.startTime, event.endTime);
+        if (event.type != EventType.ASSIGNMENT) {
+            if (isStartTime) {
 
+                Date originalStart = event.startTime;
+                event.startTime = DateUtils.combineDateAndTime(event.startTime, date);
+                event.endTime = DateUtils.getNewEndTime(originalStart, event.startTime, event.endTime);
+
+            } else {
+                event.endTime = DateUtils.fixEndTime(event.startTime, date);
+
+            }
         } else {
-            event.endTime = DateUtils.fixEndTime(event.startTime, date);
-
+            event.startTime = DateUtils.combineDateAndTime(event.startTime, date);
         }
+
         updateUI();
 
 

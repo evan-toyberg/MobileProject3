@@ -180,7 +180,6 @@ public class ListFragment extends Fragment {
         } else if (item.getItemId() == R.id.new_assignment) {
             Event event = new Event();
             event.startTime = date;
-            event.endTime = new Date(date.getTime() + 3600000);
             event.type = EventType.ASSIGNMENT;
             CalendarRepository.get().addEvent(event);
             callbacks.onEventSelected(event);
