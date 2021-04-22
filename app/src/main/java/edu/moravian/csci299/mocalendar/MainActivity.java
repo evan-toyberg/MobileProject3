@@ -21,6 +21,8 @@ import java.util.Date;
  * <p>
  * NOTE: This Activity is the bare-bones, empty, Activity. Work will be definitely needed in
  * onCreate() along with implementing some callbacks.
+ *
+ * Authors: Evan, Kyle
  */
 public class MainActivity extends AppCompatActivity implements CalendarFragment.Callbacks, ListFragment.Callbacks {
     private ListFragment listFragment;
