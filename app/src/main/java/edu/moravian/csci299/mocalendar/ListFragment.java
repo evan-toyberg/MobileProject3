@@ -186,8 +186,6 @@ public class ListFragment extends Fragment {
             return true;
         } else
             return super.onOptionsItemSelected(item);
-
-
     }
 
 
