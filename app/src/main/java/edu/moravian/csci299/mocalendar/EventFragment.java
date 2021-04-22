@@ -83,7 +83,6 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
         // Inflate the layout for this fragment
         View base = inflater.inflate(R.layout.fragment_event, container, false);
 
-        // TODO
 
         description = base.findViewById(R.id.description);
         description.addTextChangedListener(this);
@@ -111,8 +110,6 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
         return base;
     }
 
-    // TODO: save the event to the database at some point
-    //Think this saves
 
     /**
      * Save the edits to the database when the fragment is stopped.
@@ -127,7 +124,6 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
      * Updates the UI to match the event.
      */
     private void updateUI() {
-        // TODO
         typeView.setImageResource(event.type.iconResourceId);
         eventNameView.setText(event.name);
         dateView.setText(DateUtils.toFullDateString(event.startTime));
@@ -143,7 +139,6 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
 
     }
 
-    // TODO: maybe some helpful functions for showing dialogs and the callback functions
     private void showTimePicker(Boolean isStartTime) {
         TimePickerFragment picker;
         if (isStartTime) {
@@ -198,32 +193,25 @@ public class EventFragment extends Fragment implements TextWatcher, EventTypePic
     public void onTimeChanged(Boolean isStartTime, Date date) {
         if (event.type != EventType.ASSIGNMENT) {
             if (isStartTime) {
-
                 Date originalStart = event.startTime;
                 event.startTime = DateUtils.combineDateAndTime(event.startTime, date);
                 event.endTime = DateUtils.getNewEndTime(originalStart, event.startTime, event.endTime);
-
             } else {
                 event.endTime = DateUtils.fixEndTime(event.startTime, date);
-
             }
         } else {
             event.startTime = DateUtils.combineDateAndTime(event.startTime, date);
         }
-
         updateUI();
-
-
     }
 
     @Override
     public void onDateSelected(Date date) {
         event.startTime = date;
-
-        event.endTime = date;
-
+        if (event.type != EventType.ASSIGNMENT) {
+            event.endTime = date;
+        }
         updateUI();
-
     }
 
     @Override
